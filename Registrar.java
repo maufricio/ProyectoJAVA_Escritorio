@@ -9,4 +9,7 @@ public class Registrar {
     private JButton btnRegistrar;
     private JPasswordField passContrasena;
     private JPasswordField passContrasena2;
+    private JTextField txtTelefono;
+    private JTextField txtFechaNa;
+    private JComboBox cbxEmpleado;
 }
