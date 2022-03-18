@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Mar 17, 2022 at 07:15 PM
--- Server version: 5.7.36
--- PHP Version: 7.4.26
+-- Host: 127.0.0.1
+-- Generation Time: Mar 17, 2022 at 12:12 AM
+-- Server version: 10.4.17-MariaDB
+-- PHP Version: 7.4.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,22 +24,28 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `apellidosusuario`
+--
+
+CREATE TABLE `apellidosusuario` (
+  `Id_apellidos` int(11) NOT NULL,
+  `primerApellido` varchar(50) NOT NULL,
+  `segundoApellido` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `asignacionescaso`
 --
 
-DROP TABLE IF EXISTS `asignacionescaso`;
-CREATE TABLE IF NOT EXISTS `asignacionescaso` (
-  `Id_asignacioncaso` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `asignacionescaso` (
+  `Id_asignacioncaso` int(11) NOT NULL,
   `Id_caso` char(14) NOT NULL,
   `Id_usuarioasignado` int(11) NOT NULL,
   `Id_bitacora` int(11) NOT NULL,
   `fecha_limite` date DEFAULT NULL,
-  `estado_asig_caso` int(11) NOT NULL,
-  PRIMARY KEY (`Id_asignacioncaso`),
-  KEY `FK_asigcasos_casos` (`Id_caso`),
-  KEY `FK_asigcasos_usuarios` (`Id_usuarioasignado`),
-  KEY `FK_asigcaso_estadoasig` (`estado_asig_caso`),
-  KEY `FK_asigcaso_bitacora` (`Id_bitacora`)
+  `estado_asig_caso` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -48,13 +54,10 @@ CREATE TABLE IF NOT EXISTS `asignacionescaso` (
 -- Table structure for table `bitacora_programador`
 --
 
-DROP TABLE IF EXISTS `bitacora_programador`;
-CREATE TABLE IF NOT EXISTS `bitacora_programador` (
-  `Id_bitacora` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `bitacora_programador` (
+  `Id_bitacora` int(11) NOT NULL,
   `Id_usuarioasig` int(11) NOT NULL,
-  `porcentaje_trabajo` decimal(3,2) NOT NULL,
-  PRIMARY KEY (`Id_bitacora`),
-  KEY `FK_bitacora_programador_asignacionescaso` (`Id_usuarioasig`)
+  `porcentaje_trabajo` decimal(3,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -63,17 +66,12 @@ CREATE TABLE IF NOT EXISTS `bitacora_programador` (
 -- Table structure for table `casos`
 --
 
-DROP TABLE IF EXISTS `casos`;
-CREATE TABLE IF NOT EXISTS `casos` (
+CREATE TABLE `casos` (
   `Id_caso` char(14) NOT NULL,
   `Id_solicitudcaso` int(11) NOT NULL,
   `Id_departamentosolicitante` int(11) NOT NULL,
   `estadoCaso` int(11) NOT NULL,
-  `asignacioncaso` int(11) NOT NULL,
-  PRIMARY KEY (`Id_caso`),
-  KEY `FK_solicitudcaso` (`Id_solicitudcaso`),
-  KEY `FK_departamentosolicitantecasos` (`Id_departamentosolicitante`),
-  KEY `FK_estadocasoAceptado` (`estadoCaso`)
+  `asignacioncaso` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -82,16 +80,12 @@ CREATE TABLE IF NOT EXISTS `casos` (
 -- Table structure for table `departamentos`
 --
 
-DROP TABLE IF EXISTS `departamentos`;
-CREATE TABLE IF NOT EXISTS `departamentos` (
-  `Id_departamento` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `departamentos` (
+  `Id_departamento` int(11) NOT NULL,
   `nombreDepartamento` varchar(100) NOT NULL,
   `telDepContacto` char(10) NOT NULL,
   `usuarioJefeFunc` int(11) NOT NULL,
-  `usuarioJefeDesa` int(11) NOT NULL,
-  PRIMARY KEY (`Id_departamento`),
-  KEY `FK_usuarioJefeFunc` (`usuarioJefeFunc`),
-  KEY `FK_usuarioJefeDesa` (`usuarioJefeDesa`)
+  `usuarioJefeDesa` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -100,13 +94,10 @@ CREATE TABLE IF NOT EXISTS `departamentos` (
 -- Table structure for table `descripciones_bitacora`
 --
 
-DROP TABLE IF EXISTS `descripciones_bitacora`;
-CREATE TABLE IF NOT EXISTS `descripciones_bitacora` (
-  `Id_descripcion` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `descripciones_bitacora` (
+  `Id_descripcion` int(11) NOT NULL,
   `descripcion` text NOT NULL,
-  `Id_bitacora` int(11) NOT NULL,
-  PRIMARY KEY (`Id_descripcion`),
-  KEY `FK_descripcionesb_bitacoraprogr` (`Id_bitacora`)
+  `Id_bitacora` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -115,13 +106,10 @@ CREATE TABLE IF NOT EXISTS `descripciones_bitacora` (
 -- Table structure for table `descripelements_asigcaso`
 --
 
-DROP TABLE IF EXISTS `descripelements_asigcaso`;
-CREATE TABLE IF NOT EXISTS `descripelements_asigcaso` (
-  `Id_descripcionasig_caso` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `descripelements_asigcaso` (
+  `Id_descripcionasig_caso` int(11) NOT NULL,
   `descripcion_elemento` text NOT NULL,
-  `Id_asigcaso` int(11) NOT NULL,
-  PRIMARY KEY (`Id_descripcionasig_caso`),
-  KEY `FK_descripelements_asigcaso_asignacionescaso` (`Id_asigcaso`)
+  `Id_asigcaso` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -130,11 +118,9 @@ CREATE TABLE IF NOT EXISTS `descripelements_asigcaso` (
 -- Table structure for table `estadoasignacion`
 --
 
-DROP TABLE IF EXISTS `estadoasignacion`;
-CREATE TABLE IF NOT EXISTS `estadoasignacion` (
-  `Id_estadoasig` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre_estado` varchar(50) NOT NULL,
-  PRIMARY KEY (`Id_estadoasig`)
+CREATE TABLE `estadoasignacion` (
+  `Id_estadoasig` int(11) NOT NULL,
+  `nombre_estado` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -143,11 +129,9 @@ CREATE TABLE IF NOT EXISTS `estadoasignacion` (
 -- Table structure for table `estadocasos`
 --
 
-DROP TABLE IF EXISTS `estadocasos`;
-CREATE TABLE IF NOT EXISTS `estadocasos` (
-  `Id_estadocaso` int(11) NOT NULL AUTO_INCREMENT,
-  `nombreestado` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`Id_estadocaso`)
+CREATE TABLE `estadocasos` (
+  `Id_estadocaso` int(11) NOT NULL,
+  `nombreestado` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -156,11 +140,21 @@ CREATE TABLE IF NOT EXISTS `estadocasos` (
 -- Table structure for table `estadosolicitud`
 --
 
-DROP TABLE IF EXISTS `estadosolicitud`;
-CREATE TABLE IF NOT EXISTS `estadosolicitud` (
-  `Id_estadosolicitud` int(11) NOT NULL AUTO_INCREMENT,
-  `nombreEstado` varchar(30) NOT NULL,
-  PRIMARY KEY (`Id_estadosolicitud`)
+CREATE TABLE `estadosolicitud` (
+  `Id_estadosolicitud` int(11) NOT NULL,
+  `nombreEstado` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nombresusuario`
+--
+
+CREATE TABLE `nombresusuario` (
+  `Id_nombresusuario` int(11) NOT NULL,
+  `primerNombre` varchar(50) NOT NULL,
+  `segundoNombre` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -169,12 +163,10 @@ CREATE TABLE IF NOT EXISTS `estadosolicitud` (
 -- Table structure for table `observaciones_testings`
 --
 
-DROP TABLE IF EXISTS `observaciones_testings`;
-CREATE TABLE IF NOT EXISTS `observaciones_testings` (
+CREATE TABLE `observaciones_testings` (
   `Id_observacion_testing` int(11) NOT NULL,
   `descripcion_observacion` text NOT NULL,
-  `Id_testing` int(11) NOT NULL,
-  KEY `FK_observaciontesting_testings` (`Id_testing`)
+  `Id_testing` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -183,20 +175,26 @@ CREATE TABLE IF NOT EXISTS `observaciones_testings` (
 -- Table structure for table `solicitudescaso`
 --
 
-DROP TABLE IF EXISTS `solicitudescaso`;
-CREATE TABLE IF NOT EXISTS `solicitudescaso` (
-  `Id_solicitudcaso` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `solicitudescaso` (
+  `Id_solicitudcaso` int(11) NOT NULL,
   `Id_usuariosolicitante` int(11) NOT NULL,
   `Id_usuarioreceptor` int(11) NOT NULL,
   `Id_departamentosolicitante` int(11) NOT NULL,
   `estado_solicitud` int(11) NOT NULL,
   `titulo_solicitud` varchar(50) NOT NULL,
-  `descripcion_solicitud` text NOT NULL,
-  PRIMARY KEY (`Id_solicitudcaso`),
-  KEY `FK_usuariosolicitante` (`Id_usuariosolicitante`),
-  KEY `FK_usuarioreceptor` (`Id_usuarioreceptor`),
-  KEY `FK_departamentosolicitante` (`Id_departamentosolicitante`),
-  KEY `FK_estadocaso` (`estado_solicitud`)
+  `descripcion_solicitud` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `telefonousuario`
+--
+
+CREATE TABLE `telefonousuario` (
+  `Id_telefono` int(11) NOT NULL,
+  `numeroTelefono` char(10) NOT NULL,
+  `Id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -205,14 +203,10 @@ CREATE TABLE IF NOT EXISTS `solicitudescaso` (
 -- Table structure for table `testers`
 --
 
-DROP TABLE IF EXISTS `testers`;
-CREATE TABLE IF NOT EXISTS `testers` (
-  `Id_asig_tester` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `testers` (
+  `Id_asig_tester` int(11) NOT NULL,
   `Id_usuariotester` int(11) NOT NULL,
-  `Id_asignacioncaso` int(11) NOT NULL,
-  PRIMARY KEY (`Id_asig_tester`),
-  KEY `FK_testers_usuarios` (`Id_usuariotester`),
-  KEY `FK_testers_asignacioncaso` (`Id_asignacioncaso`)
+  `Id_asignacioncaso` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -221,14 +215,10 @@ CREATE TABLE IF NOT EXISTS `testers` (
 -- Table structure for table `testings`
 --
 
-DROP TABLE IF EXISTS `testings`;
-CREATE TABLE IF NOT EXISTS `testings` (
-  `Id_testing` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `testings` (
+  `Id_testing` int(11) NOT NULL,
   `Id_asigtester` int(11) NOT NULL,
-  `Id_usuarioasignado_tester` int(11) NOT NULL,
-  PRIMARY KEY (`Id_testing`),
-  KEY `FK_testingsasitester_testers` (`Id_asigtester`),
-  KEY `FK_usuarioasignado_testers` (`Id_usuarioasignado_tester`)
+  `Id_usuarioasignado_tester` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -237,22 +227,10 @@ CREATE TABLE IF NOT EXISTS `testings` (
 -- Table structure for table `tiposusuarios`
 --
 
-DROP TABLE IF EXISTS `tiposusuarios`;
-CREATE TABLE IF NOT EXISTS `tiposusuarios` (
-  `Id_tipousuario` int(11) NOT NULL AUTO_INCREMENT,
-  `tipoUsuario` varchar(100) NOT NULL,
-  PRIMARY KEY (`Id_tipousuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `tiposusuarios`
---
-
-INSERT INTO `tiposusuarios` (`Id_tipousuario`, `tipoUsuario`) VALUES
-(1, 'Jefatura'),
-(2, 'Jefe Desarrollo'),
-(3, 'Programador'),
-(4, 'Probador');
+CREATE TABLE `tiposusuarios` (
+  `Id_tipousuario` int(11) NOT NULL,
+  `tipoUsuario` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -260,28 +238,259 @@ INSERT INTO `tiposusuarios` (`Id_tipousuario`, `tipoUsuario`) VALUES
 -- Table structure for table `usuarios`
 --
 
-DROP TABLE IF EXISTS `usuarios`;
-CREATE TABLE IF NOT EXISTS `usuarios` (
-  `Id_usuario` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `usuarios` (
+  `Id_usuario` int(11) NOT NULL,
   `Id_departamento` int(11) NOT NULL,
   `tipoUsuario` int(11) NOT NULL,
-  `Tel` int(11) NOT NULL,
-  `nombresUsuario` varchar(50) NOT NULL,
-  `apellidosUsuario` varchar(50) NOT NULL,
-  `username` varchar(50) NOT NULL,
+  `nombresUsuario` int(11) NOT NULL,
+  `apellidosUsuario` int(11) NOT NULL,
   `passwordUsuario` varchar(100) NOT NULL,
-  `fechaNacimiento` date DEFAULT NULL,
-  PRIMARY KEY (`Id_usuario`),
-  KEY `FK_idDepartamento` (`Id_departamento`),
-  KEY `FK_tipoUsuario` (`tipoUsuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+  `fechaNacimiento` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `usuarios`
+-- Indexes for dumped tables
 --
 
-INSERT INTO `usuarios` (`Id_usuario`, `Id_departamento`, `tipoUsuario`, `Tel`, `nombresUsuario`, `apellidosUsuario`, `username`, `passwordUsuario`, `fechaNacimiento`) VALUES
-(1, 1, 1, 77775555, 'Xochilt Azucena', 'Rivera Gómez', 'XochiltRivera', 'contraseña', '2003-03-04');
+--
+-- Indexes for table `apellidosusuario`
+--
+ALTER TABLE `apellidosusuario`
+  ADD PRIMARY KEY (`Id_apellidos`);
+
+--
+-- Indexes for table `asignacionescaso`
+--
+ALTER TABLE `asignacionescaso`
+  ADD PRIMARY KEY (`Id_asignacioncaso`),
+  ADD KEY `FK_asigcasos_casos` (`Id_caso`),
+  ADD KEY `FK_asigcasos_usuarios` (`Id_usuarioasignado`),
+  ADD KEY `FK_asigcaso_estadoasig` (`estado_asig_caso`),
+  ADD KEY `FK_asigcaso_bitacora` (`Id_bitacora`);
+
+--
+-- Indexes for table `bitacora_programador`
+--
+ALTER TABLE `bitacora_programador`
+  ADD PRIMARY KEY (`Id_bitacora`),
+  ADD KEY `FK_bitacora_programador_asignacionescaso` (`Id_usuarioasig`);
+
+--
+-- Indexes for table `casos`
+--
+ALTER TABLE `casos`
+  ADD PRIMARY KEY (`Id_caso`),
+  ADD KEY `FK_solicitudcaso` (`Id_solicitudcaso`),
+  ADD KEY `FK_departamentosolicitantecasos` (`Id_departamentosolicitante`),
+  ADD KEY `FK_estadocasoAceptado` (`estadoCaso`);
+
+--
+-- Indexes for table `departamentos`
+--
+ALTER TABLE `departamentos`
+  ADD PRIMARY KEY (`Id_departamento`),
+  ADD KEY `FK_usuarioJefeFunc` (`usuarioJefeFunc`),
+  ADD KEY `FK_usuarioJefeDesa` (`usuarioJefeDesa`);
+
+--
+-- Indexes for table `descripciones_bitacora`
+--
+ALTER TABLE `descripciones_bitacora`
+  ADD PRIMARY KEY (`Id_descripcion`),
+  ADD KEY `FK_descripcionesb_bitacoraprogr` (`Id_bitacora`);
+
+--
+-- Indexes for table `descripelements_asigcaso`
+--
+ALTER TABLE `descripelements_asigcaso`
+  ADD PRIMARY KEY (`Id_descripcionasig_caso`),
+  ADD KEY `FK_descripelements_asigcaso_asignacionescaso` (`Id_asigcaso`);
+
+--
+-- Indexes for table `estadoasignacion`
+--
+ALTER TABLE `estadoasignacion`
+  ADD PRIMARY KEY (`Id_estadoasig`);
+
+--
+-- Indexes for table `estadocasos`
+--
+ALTER TABLE `estadocasos`
+  ADD PRIMARY KEY (`Id_estadocaso`);
+
+--
+-- Indexes for table `estadosolicitud`
+--
+ALTER TABLE `estadosolicitud`
+  ADD PRIMARY KEY (`Id_estadosolicitud`);
+
+--
+-- Indexes for table `nombresusuario`
+--
+ALTER TABLE `nombresusuario`
+  ADD PRIMARY KEY (`Id_nombresusuario`);
+
+--
+-- Indexes for table `observaciones_testings`
+--
+ALTER TABLE `observaciones_testings`
+  ADD PRIMARY KEY (`Id_observacion_testing`),
+  ADD KEY `FK_observaciontesting_testings` (`Id_testing`);
+
+--
+-- Indexes for table `solicitudescaso`
+--
+ALTER TABLE `solicitudescaso`
+  ADD PRIMARY KEY (`Id_solicitudcaso`),
+  ADD KEY `FK_usuariosolicitante` (`Id_usuariosolicitante`),
+  ADD KEY `FK_usuarioreceptor` (`Id_usuarioreceptor`),
+  ADD KEY `FK_departamentosolicitante` (`Id_departamentosolicitante`),
+  ADD KEY `FK_estadocaso` (`estado_solicitud`);
+
+--
+-- Indexes for table `telefonousuario`
+--
+ALTER TABLE `telefonousuario`
+  ADD PRIMARY KEY (`Id_telefono`),
+  ADD KEY `FK_telefonousuario` (`Id_usuario`);
+
+--
+-- Indexes for table `testers`
+--
+ALTER TABLE `testers`
+  ADD PRIMARY KEY (`Id_asig_tester`),
+  ADD KEY `FK_testers_usuarios` (`Id_usuariotester`),
+  ADD KEY `FK_testers_asignacioncaso` (`Id_asignacioncaso`);
+
+--
+-- Indexes for table `testings`
+--
+ALTER TABLE `testings`
+  ADD PRIMARY KEY (`Id_testing`),
+  ADD KEY `FK_testingsasitester_testers` (`Id_asigtester`),
+  ADD KEY `FK_usuarioasignado_testers` (`Id_usuarioasignado_tester`);
+
+--
+-- Indexes for table `tiposusuarios`
+--
+ALTER TABLE `tiposusuarios`
+  ADD PRIMARY KEY (`Id_tipousuario`);
+
+--
+-- Indexes for table `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`Id_usuario`),
+  ADD KEY `FK_idDepartamento` (`Id_departamento`),
+  ADD KEY `FK_tipoUsuario` (`tipoUsuario`),
+  ADD KEY `nombresUsuario` (`nombresUsuario`),
+  ADD KEY `FK_apellidosUsuario` (`apellidosUsuario`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `apellidosusuario`
+--
+ALTER TABLE `apellidosusuario`
+  MODIFY `Id_apellidos` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `asignacionescaso`
+--
+ALTER TABLE `asignacionescaso`
+  MODIFY `Id_asignacioncaso` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `bitacora_programador`
+--
+ALTER TABLE `bitacora_programador`
+  MODIFY `Id_bitacora` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `departamentos`
+--
+ALTER TABLE `departamentos`
+  MODIFY `Id_departamento` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `descripciones_bitacora`
+--
+ALTER TABLE `descripciones_bitacora`
+  MODIFY `Id_descripcion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `descripelements_asigcaso`
+--
+ALTER TABLE `descripelements_asigcaso`
+  MODIFY `Id_descripcionasig_caso` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `estadoasignacion`
+--
+ALTER TABLE `estadoasignacion`
+  MODIFY `Id_estadoasig` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `estadocasos`
+--
+ALTER TABLE `estadocasos`
+  MODIFY `Id_estadocaso` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `estadosolicitud`
+--
+ALTER TABLE `estadosolicitud`
+  MODIFY `Id_estadosolicitud` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `nombresusuario`
+--
+ALTER TABLE `nombresusuario`
+  MODIFY `Id_nombresusuario` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `observaciones_testings`
+--
+ALTER TABLE `observaciones_testings`
+  MODIFY `Id_observacion_testing` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `solicitudescaso`
+--
+ALTER TABLE `solicitudescaso`
+  MODIFY `Id_solicitudcaso` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `telefonousuario`
+--
+ALTER TABLE `telefonousuario`
+  MODIFY `Id_telefono` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `testers`
+--
+ALTER TABLE `testers`
+  MODIFY `Id_asig_tester` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `testings`
+--
+ALTER TABLE `testings`
+  MODIFY `Id_testing` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tiposusuarios`
+--
+ALTER TABLE `tiposusuarios`
+  MODIFY `Id_tipousuario` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `Id_usuario` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -335,6 +544,44 @@ ALTER TABLE `descripelements_asigcaso`
 --
 ALTER TABLE `observaciones_testings`
   ADD CONSTRAINT `FK_observaciontesting_testings` FOREIGN KEY (`Id_testing`) REFERENCES `testings` (`Id_testing`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `solicitudescaso`
+--
+ALTER TABLE `solicitudescaso`
+  ADD CONSTRAINT `FK_departamentosolicitante` FOREIGN KEY (`Id_departamentosolicitante`) REFERENCES `departamentos` (`Id_departamento`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_estadocaso` FOREIGN KEY (`estado_solicitud`) REFERENCES `estadosolicitud` (`Id_estadosolicitud`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_usuarioreceptor` FOREIGN KEY (`Id_usuarioreceptor`) REFERENCES `usuarios` (`Id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_usuariosolicitante` FOREIGN KEY (`Id_usuariosolicitante`) REFERENCES `usuarios` (`Id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `telefonousuario`
+--
+ALTER TABLE `telefonousuario`
+  ADD CONSTRAINT `FK_telefonousuario` FOREIGN KEY (`Id_usuario`) REFERENCES `usuarios` (`Id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `testers`
+--
+ALTER TABLE `testers`
+  ADD CONSTRAINT `FK_testers_asignacioncaso` FOREIGN KEY (`Id_asignacioncaso`) REFERENCES `asignacionescaso` (`Id_asignacioncaso`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_testers_usuarios` FOREIGN KEY (`Id_usuariotester`) REFERENCES `usuarios` (`Id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `testings`
+--
+ALTER TABLE `testings`
+  ADD CONSTRAINT `FK_testingsasitester_testers` FOREIGN KEY (`Id_asigtester`) REFERENCES `testers` (`Id_asig_tester`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_usuarioasignado_testers` FOREIGN KEY (`Id_usuarioasignado_tester`) REFERENCES `testers` (`Id_usuariotester`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD CONSTRAINT `FK_apellidosUsuario` FOREIGN KEY (`apellidosUsuario`) REFERENCES `apellidosusuario` (`Id_apellidos`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_idDepartamento` FOREIGN KEY (`Id_departamento`) REFERENCES `departamentos` (`Id_departamento`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_tipoUsuario` FOREIGN KEY (`tipoUsuario`) REFERENCES `tiposusuarios` (`Id_tipousuario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`nombresUsuario`) REFERENCES `nombresusuario` (`Id_nombresusuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
